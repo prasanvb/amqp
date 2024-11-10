@@ -6,18 +6,16 @@ import { rabbitMq } from './config';
 //step 3: Create the exchange
 //step 4: Publish the message to the exchange with a routing
 
-let ch: AMQPChannel | undefined;
-
-const createChannel = async () => {
+export const createChannel = async () => {
   try {
     const connection = new AMQPClient(rabbitMq.url);
     await connection.connect();
     const channel = await connection.channel();
     await channel.exchangeDeclare(rabbitMq.exchangeName, 'direct');
-    await channel.queue(rabbitMq.infoQName, { durable: false });
+    // await channel.queue(rabbitMq.infoQName, { durable: false });
 
     console.log(
-      '[✅] Connection over channel established, exchange declared and queue created',
+      '✅ Connection over Channel established, Exchange declared and Queue created',
     );
 
     return channel;
@@ -30,11 +28,11 @@ const createChannel = async () => {
   }
 };
 
-export const publishMessage = async (routingKey: string, message: string) => {
-  if (!ch) {
-    ch = await createChannel();
-  }
-
+export const publishMessage = async (
+  ch: AMQPChannel,
+  routingKey: string,
+  message: string,
+) => {
   const sanitizedMessage = Buffer.from(
     JSON.stringify({
       logType: routingKey,
@@ -52,6 +50,7 @@ export const publishMessage = async (routingKey: string, message: string) => {
   );
 };
 
-setInterval(() => {
-  publishMessage('info', `pubMsg ${new Date().toLocaleString()}`);
-}, 3000);
+// NOTE: Can used for debugging
+// setInterval(() => {
+//   publishMessage('info', `pubMsg ${new Date().toLocaleString()}`);
+// }, 3000);
