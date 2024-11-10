@@ -26,6 +26,7 @@ const createChannel = async () => {
     console.error('ERROR', e);
     e.connection.close();
     setTimeout(createChannel, 5000); // will try to reconnect in 5s
+    return undefined;
   }
 };
 
