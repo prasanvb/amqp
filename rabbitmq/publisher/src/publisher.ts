@@ -12,7 +12,6 @@ export const createChannel = async () => {
     await connection.connect();
     const channel = await connection.channel();
     await channel.exchangeDeclare(rabbitMq.exchangeName, 'direct');
-    // await channel.queue(rabbitMq.infoQName, { durable: false });
 
     console.log(
       '✅ Connection over Channel established, Exchange declared and Queue created',
