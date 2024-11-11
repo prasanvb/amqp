@@ -1,21 +1,16 @@
 import { AMQPClient, AMQPMessage } from "@cloudamqp/amqp-client";
-import { rabbitMq } from "./config";
-
-//step 1: Connect to the rabbitmq server
-//step 2: Create a new channel on that connection
-//step 3: Create the exchange
-//step 4: Publish the message to the exchange with a routing
+import { config } from "./config";
 
 export const createChannel = async () => {
   try {
-    const connection = new AMQPClient(rabbitMq.url);
+    const connection = new AMQPClient(config.rabbitMQ.url);
     await connection.connect();
     const channel = await connection.channel();
-    await channel.exchangeDeclare(rabbitMq.exchangeName, "direct");
+    await channel.exchangeDeclare(config.rabbitMQ.exchangeName, "direct");
 
     const q = await channel.queueDeclare("infoQueue");
 
-    channel.queueBind(q.name, rabbitMq.exchangeName, "info");
+    channel.queueBind(q.name, config.rabbitMQ.exchangeName, "info");
 
     console.log("✅ Connection over Channel established");
 

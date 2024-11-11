@@ -1,5 +1,5 @@
 {
-  "name": "logger-microservice",
+  "name": "logger-publisher",
   "version": "1.0.0",
   "description": "rabbitmq-amqplib example",
   "scripts": {
