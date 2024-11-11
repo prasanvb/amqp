@@ -9,8 +9,9 @@ import { config } from "../../config";
 //step 6 : Consume messages from the queue
 
 const exchangeName = config.rabbitMQ.exchangeName;
-const queueName = config.rabbitMQ.infoQueueName;
-const bindingKeyPattern = config.rabbitMQ.infoBindingKey;
+const queueName = config.rabbitMQ.warningAndErrorQueueName;
+const warningbindingKeyPattern = config.rabbitMQ.warningBindingKey;
+const errorbindingKeyPattern = config.rabbitMQ.errorBindingKey;
 
 async function consumeMessages() {
   const connection = await amqp.connect(config.rabbitMQ.url);
@@ -22,7 +23,8 @@ async function consumeMessages() {
 
   const q = await channel.assertQueue(queueName);
 
-  await channel.bindQueue(q.queue, exchangeName, bindingKeyPattern);
+  await channel.bindQueue(q.queue, exchangeName, warningbindingKeyPattern);
+  await channel.bindQueue(q.queue, exchangeName, errorbindingKeyPattern);
 
   channel.consume(q.queue, (msg) => {
     if (msg) {

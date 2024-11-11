@@ -1,5 +1,5 @@
 import { AMQPClient, AMQPMessage } from "@cloudamqp/amqp-client";
-import { config } from "./config";
+import { config } from "../../config";
 
 export const createChannel = async () => {
   try {
