@@ -1,55 +1,51 @@
-import { AMQPClient, AMQPChannel } from '@cloudamqp/amqp-client';
-import { rabbitMq } from './config';
+import { config } from './config';
+import amqp from 'amqplib';
 
-//step 1: Connect to the rabbitmq server
-//step 2: Create a new channel on that connection
-//step 3: Create the exchange
-//step 4: Publish the message to the exchange with a routing
+//step 1 : Connect to the rabbitmq server
+//step 2 : Create a new channel on that connection
+//step 3 : Create the exchange
+//step 4 : Publish the message to the exchange with a routing key
 
-export const createChannel = async () => {
-  try {
-    const connection = new AMQPClient(rabbitMq.url);
-    await connection.connect();
-    const channel = await connection.channel();
-    await channel.exchangeDeclare(rabbitMq.exchangeName, 'direct');
+const exchangeName = config.rabbitMQ.exchangeName;
 
-    console.log(
-      '✅ Connection over Channel established, Exchange declared and Queue created',
-    );
+export class Producer {
+  channel: amqp.Channel | undefined;
 
-    return channel;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
-    console.error('ERROR', e);
-    e.connection.close();
-    setTimeout(createChannel, 5000); // will try to reconnect in 5s
-    return undefined;
+  async createChannel() {
+    const connection = await amqp.connect(config.rabbitMQ.url);
+    this.channel = await connection.createChannel();
+    console.log('✅ Connection over Channel established');
   }
-};
 
-export const publishMessage = async (
-  ch: AMQPChannel,
-  routingKey: string,
-  message: string,
-) => {
-  const sanitizedMessage = Buffer.from(
-    JSON.stringify({
+  async publishMessage(routingKey: string, message: string) {
+    const logDetails = {
       logType: routingKey,
       message: message,
-      timeStamp: new Date(),
-    }),
-  );
+      dateTime: new Date(),
+    };
 
-  if (ch) {
-    await ch.basicPublish(rabbitMq.exchangeName, routingKey, sanitizedMessage);
+    if (!this.channel) {
+      await this.createChannel();
+    }
+
+    if (this.channel) {
+      await this.channel.assertExchange(exchangeName, 'direct');
+      await this.channel.publish(
+        exchangeName,
+        routingKey,
+        Buffer.from(JSON.stringify(logDetails)),
+      );
+
+      console.log(
+        `ExchangeName: ${exchangeName}, QueueName: ${routingKey}, Message: ${message}`,
+      );
+    }
   }
-
-  console.log(
-    `ExchangeName: ${rabbitMq.exchangeName}, QueueName: ${routingKey}, Message: ${message}`,
-  );
-};
+}
 
 // NOTE: Can used for debugging
+
+// const p = new Producer();
 // setInterval(() => {
-//   publishMessage('info', `pubMsg ${new Date().toLocaleString()}`);
+//   p.publishMessage('info', `pubMsg ${new Date().toLocaleString()}`);
 // }, 3000);

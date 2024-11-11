@@ -6,11 +6,12 @@
     "dev": "tsx watch --clear-screen=false src/index.ts",
     "prettier": "prettier --write src/**/*.ts",
     "lint": "eslint --fix src/**/*.ts",
-    "publish": "tsx watch --clear-screen=false src/publish.ts"
+    "publish": "tsx watch --clear-screen=false src/publisher.ts"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/amqplib": "^0.10.5",
     "@types/express": "^5.0.0",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
@@ -25,6 +26,7 @@
   },
   "dependencies": {
     "@cloudamqp/amqp-client": "^3.1.1",
+    "amqplib": "^0.10.4",
     "dotenv": "^16.4.5",
     "express": "^4.21.1"
   }

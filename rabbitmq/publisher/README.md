@@ -16,3 +16,11 @@
     `rabbitmq` is the name of the Docker image. `4.0-management` is the image tag, which specifies a particular version (4.0) of RabbitMQ that includes the Management plugin. The management version includes the web-based management interface.
 - Access rabbitmq management `http://localhost:15672/#/`
   - username/password - `guest`
+
+## cloudamqp/amqp-client
+
+- [example](rabbitmq/publisher/src/_publisher.ts)
+
+## amqplib
+
+- [example](rabbitmq/publisher/src/publisher.ts)
