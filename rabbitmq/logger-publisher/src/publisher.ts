@@ -1,4 +1,4 @@
-import { config } from './config';
+import { config } from '../../config';
 import amqp from 'amqplib';
 
 //step 1 : Connect to the rabbitmq server

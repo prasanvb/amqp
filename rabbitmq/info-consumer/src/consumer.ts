@@ -1,5 +1,5 @@
 import amqp from "amqplib";
-import { config } from "./config";
+import { config } from "../../config";
 
 //step 1 : Connect to the rabbitmq server
 //step 2 : Create a new channel
@@ -9,6 +9,8 @@ import { config } from "./config";
 //step 6 : Consume messages from the queue
 
 const exchangeName = config.rabbitMQ.exchangeName;
+const queueName = config.rabbitMQ.infoQueueName;
+const bindingKeyPattern = config.rabbitMQ.bindingKey;
 
 async function consumeMessages() {
   const connection = await amqp.connect(config.rabbitMQ.url);
@@ -18,9 +20,9 @@ async function consumeMessages() {
 
   await channel.assertExchange(exchangeName, "direct");
 
-  const q = await channel.assertQueue("InfoQueue");
+  const q = await channel.assertQueue(queueName);
 
-  await channel.bindQueue(q.queue, exchangeName, "Info");
+  await channel.bindQueue(q.queue, exchangeName, bindingKeyPattern);
 
   channel.consume(q.queue, (msg) => {
     if (msg) {
