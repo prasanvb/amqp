@@ -1,7 +1,7 @@
 {
-  "name": "rabbitmq-amqp-client",
+  "name": "logger-microservice",
   "version": "1.0.0",
-  "description": "",
+  "description": "rabbitmq-amqplib example",
   "scripts": {
     "dev": "tsx watch --clear-screen=false src/index.ts",
     "prettier": "prettier --write src/**/*.ts",
