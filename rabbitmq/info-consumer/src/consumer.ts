@@ -16,7 +16,7 @@ async function consumeMessages() {
   const connection = await amqp.connect(config.rabbitMQ.url);
   const channel = await connection.createChannel();
 
-  console.log("✅ Connection over Channel established - Consumer");
+  console.log("✅ Connection over Channel established: info-consumer-microservice");
 
   await channel.assertExchange(exchangeName, "direct");
 
@@ -26,7 +26,7 @@ async function consumeMessages() {
 
   channel.consume(q.queue, (msg) => {
     if (msg) {
-      const data = JSON.parse(msg.content.toString());
+      const data = msg.content.toString();
       console.log(data);
       channel.ack(msg);
     }

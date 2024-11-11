@@ -14,7 +14,9 @@ export class Producer {
   async createChannel() {
     const connection = await amqp.connect(config.rabbitMQ.url);
     this.channel = await connection.createChannel();
-    console.log('✅ Connection over Channel established - Publisher');
+    console.log(
+      '✅ Connection over Channel established - logger-publisher-microservice',
+    );
   }
 
   async publishMessage(routingKey: string, message: string) {
