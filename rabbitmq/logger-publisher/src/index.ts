@@ -17,6 +17,8 @@ const createApp = async () => {
     res.send('Welcome to RabbitMQ amqp-client project!');
   });
 
+  // url: http://localhost:3030/log
+  // payload: { "logType": "info", "message": "sample message {% now 'iso-8601', '' %}" }
   app.post('/log', async (req: Request, res: Response) => {
     const { logType, message } = req.body;
     await p.publishMessage(logType, message);

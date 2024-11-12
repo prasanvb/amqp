@@ -21,18 +21,22 @@ async function consumeMessages() {
 
   await channel.assertExchange(exchangeName, "direct");
 
-  const q = await channel.assertQueue(queueName);
+  const q = await channel.assertQueue(queueName, { durable: true });
 
   await channel.bindQueue(q.queue, exchangeName, warningbindingKeyPattern);
   await channel.bindQueue(q.queue, exchangeName, errorbindingKeyPattern);
 
-  channel.consume(q.queue, (msg) => {
-    if (msg) {
-      const data = msg.content.toString();
-      console.log(data);
-      channel.ack(msg);
-    }
-  });
+  channel.consume(
+    q.queue,
+    (msg) => {
+      if (msg) {
+        const data = msg.content.toString();
+        console.log(data);
+        channel.ack(msg);
+      }
+    },
+    { noAck: false }
+  );
 }
 
 consumeMessages();
